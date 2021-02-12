@@ -1,0 +1,25 @@
+[header]
+<section id="loginaccess">
+  <h2>Your login to the [user:client:name] cms:</h2>
+  {{ ifpresent [error] }}
+    <p class="error">[error]</p>
+  {{ endif }}
+  {{ ifpresent [succes] }}
+    <p class="info">[succes]<br>
+      From now on you can login with: [user:email] and the password you just entered.</p>
+  {{ else }}
+    <p>You can login with: [user:email] and the password you set sing the following form.</p>
+    <h3>Change your password:</h3>
+    <form action="/usersettings#loginaccess" method="post">
+      <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+      <div><label for="change_password_new">New password</label><input name="password"  id="change_password_new" type="password" required minlength="8" autocomplete="new-password"></div>
+      <div><label for="change_password_confirm">Confirm new password</label><input name="password_confirm"  id="change_password_confirm" type="password" required minlength="8" autocomplete="new-password"></div>
+      <p>
+        Both passwords need to be the same, so we are sure you dont lock yourself out. <br>
+        Make sure to have at least 8 characters in your password.
+      </p>
+      <div><input type="submit" value="Update"></div>
+    </form>
+  {{ endif }}
+</section>
+[footer]

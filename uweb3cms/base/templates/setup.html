@@ -1,0 +1,27 @@
+[header]
+<script src="/js/forms.js"></script>
+<section>
+  <header>
+    <h2>CMS Settings and access controls:</h2>
+    <p>Welcome to your CMS instance.</p>
+  </header>
+</section>
+<section id="loginaccess">
+  <h3>Settings and admin account:</h3>
+  {{ ifpresent [error] }}
+    <p class="error">[error]</p>
+  {{ endif }}
+  <form action="/setup" method="post">
+    <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+    <div><label for="new_email">Admin email address</label><input name="email" id="new_email" type="email" required placeholder="example@email.com" minlength="4" maxlength="255"></div>
+    <div><label for="new_password_new">New password</label><input name="password" id="new_password_new" type="password" required minlength="8" autocomplete="new-password"></div>
+    <div><label for="new_password_confirm">Confirm new password</label><input name="password_confirm" id="new_password_confirm" type="password" required minlength="8" autocomplete="new-password"></div>
+    <p>
+      Both passwords need to be the same, so we are sure you dont lock yourself out. <br>
+      Make sure to have at least 8 characters in your password.
+    </p>
+    <div><label for="new_hostname">Hostname</label><input name="hostname" id="new_hostname" type="text" required placeholder="myserver.com" minlength="4" maxlength="255"></div>
+    <div><input type="submit" value="Save changes" class="primary"></div>
+  </form>
+</section>
+[footer]

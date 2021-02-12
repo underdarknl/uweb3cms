@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn instance to serve the uweb cms
+After=network.target
+
+[Service]
+User=cms
+Group=www-data
+ExecStart=/opt/cms/gunicorn.sh
+WorkingDirectory=/opt/cms
+
+[Install]
+WantedBy=multi-user.target

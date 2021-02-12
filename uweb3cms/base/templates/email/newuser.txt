@@ -1,0 +1,14 @@
+Dear [email],
+
+This email contains the username and password you need to login to the CMS.
+
+By navigating to the following link you can log in:
+
+https://[host]
+
+Your email is: [email]
+Your password is: [password]
+
+Once logged in you can change your password on the settings page.
+
+With regards

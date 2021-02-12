@@ -1,0 +1,10 @@
+[header]
+
+<section>
+  <h1>404</h1>
+  {{ if [command] }}<p class="error">There is no page at address <q><code>[command]</code></q>.</p>
+  {{ elif [error] }}<p class="error">[error]</p>
+  {{ else}}<p class="error">Page not found</p>{{ endif }}
+</section>
+
+[footer]

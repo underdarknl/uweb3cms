@@ -1,0 +1,36 @@
+[header]
+
+
+{{ if [articles] or [query] }}
+<section>
+  <h2>Your articles using type &quot;[type:name]&quot;:</h2>
+  <form action="/typearticles/[type:name]" method="get" class="lineform">
+    <div>
+      <input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif }}" placeholder="Filter your articles.">
+      <input id="query" type="submit" value="Filter" ><a class="button" href="/typearticles">Clear</a>
+    </div>
+  </form>
+        <h2>Articles using this type  {{ if [query] }}matching: &quot;[query]&quot {{ endif }} sorted by new:</h2>
+        {{ if [articles] }}
+            <ul>
+            {{ for article in [articles] }}
+              <li><a href="/article/[article:name|url]">[article:name]</a></li>
+            {{ endfor }}
+            </ul>
+        {{ else }}
+          <p class="info">No articles {{ if [query] }}found{{ else }}present for this type.{{ endif }}.</p>
+        {{ endif }}
+
+  </div>
+
+
+
+</section>
+{{ else }}
+  <section>
+    <h2>Your articles:</h2>
+    <p class="info">No articles use this type.</p>
+  </section>
+{{ endif }}
+
+[footer]

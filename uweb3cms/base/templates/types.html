@@ -1,0 +1,58 @@
+[header]
+
+<section>
+  <h2>Your Types:</h2>
+  {{ if [types] or [query] }}
+    <form action="/types" method="get" class="lineform">
+      <div><input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif}}" placeholder="Filter your types"><input id="query" type="submit" value="Filter"><a class="button" href="/types">Clear</a></div>
+    </form>
+    {{ if [types] }}
+    <table class="types">
+      <thead>
+        <tr><th>Name</th><th>Articles</th><th>Delete</th></tr>
+      </thead>
+      <tbody>
+      {{ for type in [types] }}
+        <tr>
+          <td><a href="/type/[type:name]">[type:name]</a></td>
+          <td><a href="/typearticles/[type:name]" title="List of articles using &quot;[type:name]&quot;.">Articles</a></td>
+          <td>
+            {{ if [type:client] }}
+            <form action="/type/[type:name]/remove" method="post">
+              <input type="hidden" name="xsrf" value="[xsrf]">
+              <input type="submit" value="Remove" onclick="return confirm('Are you sure you want to delete this type? Atoms can still use this type, but they will not maintain this type when edited or saved.');">
+            </form>
+            {{ else }}
+            Base type.
+            {{ endif }}
+          </td>
+        </tr>
+      {{ endfor }}
+      </tbody>
+    </table>
+    {{ elif [query] }}
+    <p class="info">No type found for &quot;[query]&quot;.</p>
+    {{ endif }}
+  {{ else }}
+    <p>You have no type just yet. Create one using the form below.</p>
+  {{ endif }}
+</section>
+
+<section>
+  <h3>Create a new type:</h3>
+  <p>Types are the base of any object in your CMS, you define what fields such an item should have, and which are optional.</p>
+  <form action="/type" method="post">
+    <input type="hidden" name="xsrf" value="[xsrf]">
+    <div><label for="type_name">Name</label><input type="text" name="name" id="type_name" maxlength="45" required></div>
+
+    <div><label for="schema">Schema</label><textarea type="text" id="schema" name="schema" required></textarea></div>
+    <p>The schema must be Json compliant, and adhere to json.schema 7 standards.</p>
+
+    <div><label for="template">Template</label><textarea type="text" id="template" name="template" required></textarea></div>
+    <p>Use [block] brackets to place the fields defined in the schema in your template output.</p>
+
+    <div><input type="submit" value="Create a new type." class="primary"></div>
+  </form>
+</section>
+
+[footer]

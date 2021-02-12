@@ -1,0 +1,181 @@
+[header]
+
+  <aside>
+    <section>
+      <h2>Meta:</h2>
+      <p title="[collection:dateCreated]">Published on [collection:dateCreated|DateOnly]</p>
+      <a href="/json/collection/[collection:name]">Json</a>
+
+      {{ if [menus] }}
+      <h2>Menus:</h2>
+      <ul>
+      {{for menu in [menus] }}
+        <li><a href="/menu/[collection:name|url]/[menu:name|url]">[menu:name]</a></li>
+      {{ endfor }}
+      </ul>
+      {{ endif }}
+      <h2>Delete:</h2>
+      <form action="/collection/[collection:name|url]/remove" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]">
+        <div><input type="submit" value="Remove collection" onclick="return confirm('Are you sure you want to delete this collection?');"></div>
+        {{ if [articles] }}<p>All coupled articles will not be deleted.</p>{{ endif }}
+        {{ if [menus] }}<p>All coupled menu will be deleted.</p>{{ endif }}
+      </form>
+    </section>
+  </aside>
+<div>
+  {{ if [articles] }}
+  <section>
+    <h2>Articles in [collection:name]:</h2>
+    {{ ifpresent [message] }}{{ if [message] }}
+      <p class="info">[message]</p>
+    {{ endif }}{{ endif }}
+    <form action="/collection/[collection:name|url]" method="post">
+      <input type="hidden" name="xsrf" value="[xsrf]">
+      <div><label for="collection_name">Collection name:</label><input type="text" name="name" id="collection_name" value="[collection:name]"></div>
+
+      <table class="articles">
+        <thead>
+          <tr>
+            <td>Linked</td>
+            <td>Name</td>
+            <td>Url</td>
+            <td>Template</td>
+            {{ if [collection:schema] }}<td>Meta</td>{{ endif }}
+            <td>Sort</td>
+          </tr>
+        </thead>
+        <tbody>
+        {{ for article in [articles] }}
+          <tr>
+            <td>
+              <input type="hidden" id="sort[article:ID]" class="sort" name="sort[[article:ID]]" value="[article:sortorder]">
+              <input type="checkbox" name="articles[[article:ID]]" checked="checked" value="[article:ID]"></td>
+            <td><a href="/article/[collection:name|url]/[article:name|url]">[article:name]</a></td>
+            <td><input type="text" name="urls[[article:ID]]" value="[article:url|NullString]" maxlength="100"></td>
+            <td><input type="text" name="templates[[article:ID]]" value="[article:template]" maxlength="50"></td>
+            {{ if [collection:schema] }}<td>
+            <label for="modaltoggle_[article:ID]">Edit</label>
+            <input type="checkbox" id="modaltoggle_[article:ID]" class="modaltoggle" hidden>
+            <div class="modal info metadatafields">
+              <aside>
+                <h2>Meta data fields for [article:name]:</h2>
+                <textarea class="metadata" name="metas[[article:ID]]" data-article="[article:ID]">[article:meta]</textarea>
+                <label for="modaltoggle_[article:ID]">Ok</label>
+              </aside>
+            </div>
+            </td>{{ endif }}
+            <td>
+              <button title="Move article up from [article:sortorder]" class="updown up">↑</button>
+              <button title="Move article down  from [article:sortorder]" class="updown down">↓</button>
+            </td>
+          </tr>
+        {{ endfor }}
+        </tbody>
+        <tfoot><tr><td colspan="7"><input type="submit" value="Save changes" class="primary"></td></tr></tfoot>
+      </table>
+    </form>
+  </section>
+  {{ else }}
+    <section>
+      <h2>Collection: [collection:name]L</h2>
+      <form action="/collection/[collection:name|url]" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]">
+        <div><label for="collection_name">Collection name:</label><input type="text" name="name" id="collection_name" value="[collection:name]"></div>
+        <div><input type="submit" value="Save changes" class="primary"></div>
+      </form>
+      <p class="info">This collection is empty, try adding a few articles to it.</p>
+    </section>
+  {{ endif }}
+  {{ if [allarticles] or [query] }}
+  <section>
+    <h3>Add existing article to collection:</h3>
+    <form action="/collection/[collection:name|url]" method="get">
+      <div><label for="query">Filter</label><input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif }}" ><input id="query" type="submit" value="Filter" ><a class="button" href="/collection/[collection:name]">Clear</a></div>
+    </form>
+    <form action="/collectionarticles" method="post">
+      <input type="hidden" name="xsrf" value="[xsrf]" >
+      <input type="hidden" name="collection" value="[collection:name]" >
+      <div class="magazine">
+        <div>
+          {{ if [query] }}
+          <h2>Article matching: &quot;[query]&quot;</h2>
+          {{ else }}
+          {{ if [toparticles] }}<h2>Newest articles:</h2>{{ endif }}
+          {{ endif }}
+          {{ if [allarticles] }}
+            <table>
+              <thead>
+                <tr>
+                  <td style="width:10%">Add</td>
+                  <td>Name</td>
+                </tr>
+              </thead>
+              <tbody>
+              {{ for article in [allarticles] }}
+                <tr>
+                  <td><input type="checkbox" name="articles" id="article_[article:ID]" value="[article:ID]"></td>
+                  <td><label for="article_[article:ID]" title="[article:ID]">[article:name]</label></td>
+                </tr>
+              {{ endfor }}
+              </tbody>
+              <tfoot><tr><td colspan="3"><input type="submit" value="Add to collection" ></td></tr>
+            </table>
+          {{ else }}
+            <p>No articles present</p>
+          {{ endif }}
+        </div>
+
+        {{ if [toparticles] }}
+        <div class="split50">
+          <h2>Most often coupled articles</h2>
+          <table>
+            <thead>
+              <tr>
+                <td style="width:10%">Add</td>
+                <td>Name</td>
+              </tr>
+            </thead>
+            <tbody>
+            {{ for article in [toparticles] }}
+              <tr>
+                <td><input type="checkbox" name="articles" id="article_[article:ID]" value="[article:ID]"></td>
+                <td><label for="article_[article:ID]" title="[article:ID]">[article:name]</label></td>
+              </tr>
+            {{ endfor }}
+            </tbody>
+            <tfoot><tr><td colspan="3"><input type="submit" value="Add to collection" ></td></tr>
+          </table>
+        </div>
+        {{ endif }}
+      </div>
+    </form>
+  </section>
+  {{ endif }}
+
+  <section>
+    <h3>Create a new article and connect to this collection:</h3>
+    <form action="/article" method="post">
+      <input type="hidden" name="xsrf" value="[xsrf]">
+      <input type="hidden" name="collection" value="[collection:name]" >
+      <div><label for="article_name">Name</label><input type="text" name="name" id="article_name"  maxlength="80" required><input type="submit" value="Create" ></div>
+      <p>
+            Articles can be shared between collections. So make sure to give them a logical name depending on your sharing needs.<br>
+            Eg, &quot;Contact&quot; would be great for a shared contact page. <br>
+            But &quot;Home&quot; wouldn't be very useful if you are using that only on one website. &quot;[collection:name]-Home&quot; would then make more sense.</p>
+    </form>
+  </section>
+
+  <section>
+    <h3>Edit the Metadata schema:</h3>
+    <form action="/collection/[collection:name|url]" method="post">
+      <input type="hidden" name="xsrf" value="[xsrf]">
+      <div><label for="metadata_schema">Schema</label><textarea type="text" id="metadata_schema" name="schema" rows="{{ if [collection:schema] }}[collection:schema|TextareaRowCount]{{ endif }}">{{ if [collection:schema] }}[collection:schema|prettyjson]{{ endif }}</textarea></div>
+      <p>The schema must be Json compliant, and adhere to json.schema 7 standards.<br>
+      Binding articles to the collection gives you a chance to also include collection specific meta-data information. These bits of information can be used to add additional details to the article pages (like keywords, meta-tags) but might also be useful for addings icons to links that point to an article.</p>
+      <div><input type="submit" value="Save changes to Metadata schema"></div>
+    </form>
+  </section>
+</div>
+<script src="/js/forms.js"></script>
+[footer]

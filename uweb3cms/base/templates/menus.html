@@ -1,0 +1,65 @@
+[header]
+
+{{ if [menus] or [query] }}
+<section>
+  <h2>Your menus:</h2>
+  <form action="/menus" method="get" class="lineform">
+    <div><input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif }}" placeholder="Filter your menus."><input id="query" type="submit" value="Filter" ><a class="button" href="/menus">Clear</a></div>
+  </form>
+        {{ if [query] }}
+          <h2>menus matching: &quot;[query]&quot;</h2>
+        {{ endif }}
+        {{ if [menus] }}
+            <table class="menus">
+              <thead>
+                <tr>
+                  <td>Collection</td>
+                  <td>Name</td>
+                  <td>Remove</td>
+                </tr>
+              </thead>
+              <tbody>
+              {{ for menu in [menus] }}
+                <tr>
+                  <td><a href="/collection/[menu:collection:name|url]">[menu:collection:name]</a></td>
+                  <td><a href="/menu/[menu:collection:name|url]/[menu:name|url]">[menu:name]</a></td>
+                  <td>
+                    <form action="/menu/[menu:collection:name|url]/[menu:name|url]/remove" method="post">
+                      <input type="hidden" name="xsrf" value="[xsrf]">
+                      <input type="submit" value="Remove" onclick="return confirm('Are you sure you want to delete this menu? All coupled articles will not be deleted.');">
+                    </form>
+                  </td>
+                </tr>
+              {{ endfor }}
+              </tbody>
+            </table>
+        {{ else }}
+          <p class="info">No menus {{ if [query] }}found{{ else }}present{{ endif }}.</p>
+        {{ endif }}
+</section>
+{{ else }}
+  <section>
+    <h2>Your menus:</h2>
+    <p class="info">You have no menus yet.</p>
+  </section>
+{{ endif }}
+<section>
+  <h3>Create a new menu:</h3>
+  <form action="/menu" method="post">
+    <input type="hidden" name="xsrf" value="[xsrf]" >
+    <div><label for="menu_collection">Collection</label>
+      <select name="collection">
+        {{ for collection in [collections]}}
+          <option value="[collection:name]">[collection:name]</value>
+        {{ endfor }}
+      </select>
+    </div>
+    <div><label for="menu_name">Name</label><input type="text" name="name" id="menu_name"  maxlength="50" required></div>
+    <p>
+          Menus are keps per collection. Per Collection there's a default menu, but you can make more, and add other articles to those, or use articles in more menus in different combinations.
+    </p>
+    <div><input type="submit" value="Create"></div>
+  </form>
+</section>
+
+[footer]

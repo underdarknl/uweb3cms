@@ -1,0 +1,9 @@
+Dear [email],
+
+You or someone else requested us to reset your password. To make sure it was really you we need you to click the following link:
+
+https://[host]/resetpassword/[email|url]/[resethash|url]
+
+On that page you will be asked to enter your new password.
+
+With regards.

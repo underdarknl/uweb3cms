@@ -1,0 +1,24 @@
+[header]
+<script src="/js/forms.js"></script>
+<main>
+  <div>
+    <section>
+      <header>
+        <h1>Password reset</h1>
+        <p>[resetuser:email]</p>
+      </header>
+      {{ if [message] }}
+      <p class="info">[message]</p>
+      {{ endif }}
+      <form action="/resetpassword/[resetuser:email|url|html]/[resethash]" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]">
+
+        <div><label for="user_password">New password</label> <input type="password" name="password" id="user_password" autocomplete="new-password" minlength="8"></div>
+        <div><label for="user_password_confirm">Confirm password</label> <input type="password" name="password_confirm" id="user_password_confirm" autocomplete="new-password" minlength="8"></div>
+
+        <input type="submit" value="Reset password" class="primary">
+      </form>
+    </section>
+  </div>
+</main>
+[footer]

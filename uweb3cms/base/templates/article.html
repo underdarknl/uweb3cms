@@ -1,0 +1,110 @@
+[header]
+  <script src="/js/forms.js"></script>
+  <aside>
+    <section>
+      <h2>Id: [article:ID]</h2>
+      <p title="[article:published]">Published on [article:published|DateOnly]</p>
+      <a href="/json/article/[article:name|url]">Json</a>
+      <a href="/json/article/[article:name|url]?raw=true" title="Unparsed atom templates">Raw Json</a>
+
+      <form action="/article/[article:name]/remove" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]" />
+        <div><input type="submit" value="Remove acticle"></div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Usage:</h2>
+      {{ if [collections] }}
+      <ul>
+      {{ for collection in [collections] }}
+        <li><a href="/collection/[collection:name|url]">[collection:name]</a>{{ if [collection:url]}} as /[collection:url]{{ endif }}</li>
+      {{ endfor }}
+      </ul>
+      {{ else }}
+      <p>Not currently used in any collection.</p>
+      {{ endif }}
+    </section>
+
+    <section class="markdown">
+      <h3>Markdown</h3>
+      <p>Markdown syntax can be used in most fields</p>
+      <ul>
+        <li>**<strong>Vat</strong>**</li>
+        <li>*<span class="font-style:italic">Italic</span>*</li>
+        <li>
+          <ul style="list-style-type:circle">
+            <li>- First</li>
+            <li>- Second</li>
+          </ul>
+        </li>
+        <li>
+          <ol style="list-style-type:decimal">
+            <li>1. First</li>
+            <li>2. Second</li>
+          </ol>
+        </li>
+      </ul>
+      <p><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">More Markdown tips</a></p>
+    </section>
+  </aside>
+  <div>
+    <section>
+      <h1>Edit Article</h1>
+      <form action="/article/[article:name]" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]" />
+
+        <div><label for="name">Name</label><input type="text" id="name" name="name" value="[article:name]" maxlength="80" required></div>
+        <p>The name for each article in your whole CMS must be unique.</p>
+
+        {{ if [atoms] }}
+        <h2>Atoms in this article:</h2>
+        <table class="article">
+          <thead>
+            <tr>
+              <td title="Coupled"></td><td>Id / Key</td><td>Content</td><td colspan="2"></td>
+            </tr>
+          </thead>
+        {{ for atom in [atoms] }}
+          <tr>
+            <td>
+              <input type="hidden" id="sort[atom:ID]" class="sort" name="sort[[atom:ID]]" value="[atom:sortorder]">
+              <input type="checkbox" id="atoms[atom:ID]" name="atoms[[atom:ID]]" value="[atom:ID]" checked="true"><br>
+              <label for="atoms[atom:ID]"><a href="/atom/[atom:ID]" title="details">[atom:ID]</a></label>
+            </td>
+            <td><input type="text" value="{{ if [atom:key] }}[atom:key]{{ endif }}" name="key[[atom:ID]]" maxlength="255" size="10"></td>
+            <td>
+            <fieldset>
+              <div>
+                <label for="types[atom:ID]">Type:</label><select id="types[atom:ID]" data-id="[atom:ID]" name="type[[atom:ID]]" data-original="[atom:content]">
+                {{ for type in [types] }}
+                  <option data-schema="[type:schema]" value="[type:ID]" {{ if [atom:type:ID] == [type:ID] }} selected{{ endif }}>[type:name]{{if not [type:client]}} *{{ endif }}</option>
+                {{ endfor }}
+                </select>
+              </div>
+            </fieldset>
+            </td>
+            <td>
+              <button title="Move atom up from [atom:sortorder]" class="updown up">↑</button>
+              <button title="Move atom down from [atom:sortorder]" class="updown down">↓</button>
+            </td>
+          </tr>
+        {{ endfor }}
+        </table>
+        {{ endif }}
+        <fieldset>
+          <h3>New atom:</h3>
+          <div><label for="new_key">Key</label><input type="text" id="new_key" name="key[new]" placeholder="optional unique key."></div>
+          <div><label for="new_type">Type</label><select id="new_type" name="type[new]">
+            {{ for type in [types] }}
+              <option data-schema="[type:schema]" value="[type:ID]">[type:name]{{if not [type:client]}} *{{ endif }}</option>
+            {{ endfor }}
+          </select></div>
+          <p class="info">Types denoted with an * are base types.</p>
+        </fieldset>
+        <div><input type="submit" value="Save changes" class="primary"></div>
+      </form>
+    </section>
+  </div>
+
+[footer]

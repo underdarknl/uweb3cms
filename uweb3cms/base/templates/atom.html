@@ -1,0 +1,60 @@
+[header]
+  <script src="/js/forms.js"></script>
+  <aside>
+    <section>
+      <h2>Id: [atominfo:ID]</h2>
+      <p>Key: [atominfo:key]</p>
+      <p>Type: <a href="/type/[atominfo:type:name]">[atominfo:type:name]</a></p>
+      <p title="[atominfo:published]">Published on: [atominfo:published|DateOnly]</p>
+    </section>
+
+    <nav>
+      <h2>Present in:</h2>
+      <ul>
+      {{ for article in [articles] }}
+        <li><a href="/article/[article:name]">[article:name]</a></li>
+      {{ endfor }}
+      </ul>
+    </nav>
+
+    <section>
+      <h2>Contents:</h2>
+      <sub>Before markdown parsing and atom inclusion</sub>
+      <dl>
+      {{ if isinstance([atomfields], dict) }}
+
+        {{ for key, value in [atomfields|items] }}
+        <dt>[key]</dt><dd>{{ if isinstance([value], list)}}
+          <ul>
+          {{ for item in [value] }}
+            <li>[item]</li>
+          {{ endfor }}
+          </ul>
+        {{ else }}
+          [value]
+        {{ endif }}</dd>
+        {{ endfor }}
+      </dl>
+      {{ elif isinstance([atomfields], list) }}
+        <dt>root</dt><dd>
+        <ul>
+          {{ for item in [atomfields] }}
+            <li>[item]</li>
+          {{ endfor }}
+          </ul>
+        </dd>
+      {{ endif }}
+      </dl>
+    </section>
+  </aside>
+  <div>
+    <section>
+      [output]
+    </section>
+
+    <section>
+      <h2>Rendered HTML source:</h2>
+      <pre>[output|htmlsource]</pre>
+    </section>
+  </div>
+[footer]

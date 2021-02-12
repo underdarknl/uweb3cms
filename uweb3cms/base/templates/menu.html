@@ -1,0 +1,142 @@
+[header]
+
+  <aside>
+    <section>
+      <h2>Meta:</h2>
+      <p title="[collection:dateCreated]">Published on [menu:dateCreated|DateOnly]</p>
+      <p><a href="/json/menu/[menu:collection:name|url]/[menu:name|url]">Json</a></p>
+      <p>Part of <a href="/collection/[menu:collection:name|url]">[menu:collection:name]</a></p>
+
+      <h2>Delete:</h2>
+      <form action="/menu/[menu:collection:name|url]/[menu:name|url]/remove" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]">
+        <div><input type="submit" value="Remove menu" onclick="return confirm('Are you sure you want to delete this menu?');"></div>
+        {{ if [articles] }}<p>All coupled articles will not be deleted.</p>{{ endif }}
+      </form>
+    </section>
+  </aside>
+<div>
+  {{ if [articles] }}
+  <section>
+    <script src="/js/forms.js"></script>
+    <h2>Articles in [menu:name]:</h2>
+    {{ ifpresent [message] }}{{ if [message] }}
+      <p class="info">[message]</p>
+    {{ endif }}{{ endif }}
+    <form action="/menu/[menu:collection:name|url]/[menu:name|url]" method="post">
+      <input type="hidden" name="xsrf" value="[xsrf]" >
+      <div><label for="menu_name">Menu name:</label><input type="text" name="name" id="menu_name" value="[menu:name]"></div>
+
+      <table class="articles">
+        <thead>
+          <tr>
+            <td>Linked</td>
+            <td>Name</td>
+            <td>Links to</td>
+            <td>Menu name</td>
+            <td>Sort</td>
+          </tr>
+        </thead>
+        <tbody>
+        {{ for article in [articles] }}
+          <tr>
+            <td>
+              <input type="hidden" id="sort[article:ID]" class="sort" name="sort[[article:ID]]" value="[article:sortorder]">
+              <input type="checkbox" name="articles[[article:ID]]" checked="checked" value="[article:ID]"></td>
+            <td><a href="/article/[menu:collection:name|url]/[article:name|url]">[article:name]</a></td>
+            <td>/[article:url]</a></td>
+            <td><input type="text" name="menunames[[article:ID]]" value="{{ if [article:menuname] }}[article:menuname]{{ endif }}" maxlength="50" placeholder="Name in menu"></td>
+            <td>
+              <button title="Move article up from [article:sortorder]" class="updown up">↑</button>
+              <button title="Move article down from [article:sortorder]" class="updown down">↓</button>
+            </td>
+          </tr>
+        {{ endfor }}
+        </tbody>
+        <tfoot><tr><td colspan="5"><input type="submit" value="Save changes" class="primary"></td></tr></tfoot>
+      </table>
+    </form>
+  </section>
+  {{ else }}
+    <section>
+      <h2>Menu: [menu:name]</h2>
+      <form action="/menu/[menu:collection:name|url]/[menu:name|url]" method="post">
+        <input type="hidden" name="xsrf" value="[xsrf]" >
+        <div><label for="menu_name">Menu name:</label><input type="text" name="name" id="menu_name" value="[menu:name]"></div>
+        <div><input type="submit" value="Save changes" class="primary"></div>
+      </form>
+      {{ if [allarticles] or [query] }}
+        <p class="info">This menu is empty, try adding a few articles to it.</p>
+      {{ else }}
+        <p class="info">This menu is empty, you can only add articles to it that are present in its collection.</p>
+      {{ endif }}
+    </section>
+  {{ endif }}
+  {{ if [allarticles] or [query] }}
+  <section>
+    <h3>Add article to menu:</h3>
+    <form action="/menu/[menu:collection:name|url]/[menu:name|url]" method="get">
+      <div><label for="query">Filter</label><input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif }}" ><input id="query" type="submit" value="Filter" ><a class="button" href="/menu/[menu:collection:name|url]/[menu:name|url]">Clear</a></div>
+    </form>
+    <form action="/menuarticles" method="post">
+      <input type="hidden" name="xsrf" value="[xsrf]" >
+      <input type="hidden" name="collection" value="[menu:collection:name]" >
+      <input type="hidden" name="menu" value="[menu:name]" >
+      <div class="magazine">
+        <div>
+          {{ if [query] }}
+          <h2>Article matching: &quot;[query]&quot;</h2>
+          {{ else }}
+          {{ if [toparticles] }}<h2>Newest articles:</h2>{{ endif }}
+          {{ endif }}
+          {{ if [allarticles] }}
+            <table>
+              <thead>
+                <tr>
+                  <td style="width:10%">Add</td>
+                  <td>Name</td>
+                </tr>
+              </thead>
+              <tbody>
+              {{ for article in [allarticles] }}
+                <tr>
+                  <td><input type="checkbox" name="articles" id="article_[article:ID]" value="[article:ID]"></td>
+                  <td><label for="article_[article:ID]" title="[article:ID]">[article:name]</label></td>
+                </tr>
+              {{ endfor }}
+              </tbody>
+              <tfoot><tr><td colspan="3"><input type="submit" value="Add to menu" ></td></tr>
+            </table>
+          {{ else }}
+            <p>No articles present</p>
+          {{ endif }}
+        </div>
+
+        {{ if [toparticles] }}
+        <div class="split50">
+          <h2>Most often coupled articles</h2>
+          <table>
+            <thead>
+              <tr>
+                <td style="width:10%">Add</td>
+                <td>Name</td>
+              </tr>
+            </thead>
+            <tbody>
+            {{ for article in [toparticles] }}
+              <tr>
+                <td><input type="checkbox" name="articles" id="article_[article:ID]" value="[article:ID]"></td>
+                <td><label for="article_[article:ID]" title="[article:ID]">[article:name]</label></td>
+              </tr>
+            {{ endfor }}
+            </tbody>
+            <tfoot><tr><td colspan="3"><input type="submit" value="Add to menu" ></td></tr>
+          </table>
+        </div>
+        {{ endif }}
+      </div>
+    </form>
+  </section>
+  {{ endif }}
+</div>
+[footer]

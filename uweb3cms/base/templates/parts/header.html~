@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
+    <title>BBC CMS</title>
+    <link rel="stylesheet" href="/styles/admin.css" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <header><h1>Welcome to BigBangcasino CMS</h1>
+        
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/variables">Variables</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div id="content">

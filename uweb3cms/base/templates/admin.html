@@ -1,0 +1,133 @@
+[header]
+{{ if [user:client:ID] == 0 }}
+<section id="clients">
+  <h3>Client accounts:</h3>
+
+  {{ ifpresent [clienterror] }}
+    <p class="error">[clienterror]</p>
+  {{ endif }}
+  {{ ifpresent [clientsucces] }}
+    <p class="info">[clientsucces]</p>
+  {{ endif }}
+  {{ if [clients] }}
+  <form action="/admin#clients" method="post">
+    <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+    <table>
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>Name</td>
+          <td>Active</td>
+          <td>Delete</td>
+        </tr>
+      </thead>
+      <tbody>
+    {{ for client in [clients] }}
+        <tr>
+          <td>[client:ID]</td>
+          <td><input type="text" value="[client:name]" name="clientname[[client:ID]]" required maxlength="45"></td>
+          {{ if [client:ID] != 0 }}
+          <td><input type="checkbox" name="clientactive[[client:ID]]" value="[client:ID]" {{ if [client:active] == 'true'}} checked{{ endif }}></td>
+          <td><input type="checkbox" name="clientdelete[[client:ID]]" value="[client:ID]"></td>
+          {{ else }}<td colspan="2" width="25%">Admin account, always active.</td>{{ endif }}
+        </tr>
+    {{ endfor }}
+      </tbody>
+    </table>
+    <div><input type="submit" value="Update"></div>
+  </form>
+  {{ else }}
+    <p class="warning">No clients registered just yet, create one using the form below.</p>
+  {{ endif }}
+
+  <h4>Create new client:</h4>
+  <form action="/admin#clients" method="post">
+    <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+    <div><label for="new_client_name">Name</label><input type="text" id="new_client_name" name="clientname[new]" required maxlength="45"></div>
+    <div><label for="new_client_active">Active</label><input type="checkbox" id="new_client_active" name="clientactive[new]" value="true" checked></div>
+    <div><input type="submit" value="Create new client"></div>
+  </form>
+</section>
+{{ endif }}
+{{ if [user:client:ID] != 0  or [clients] }}
+<section id="login">
+  <h3>Login accounts:</h3>
+  {{ ifpresent [usererror] }}
+    <p class="error">[usererror]</p>
+  {{ endif }}
+  {{ ifpresent [usersucces] }}
+    <p class="info">[usersucces]</p>
+  {{ endif }}
+
+  {{ if [users] }}
+    <form action="/admin#login" method="post">
+      <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+      <table>
+        <thead>
+          <tr>
+            <td>Email</td>
+            {{ if [user:client:ID] == 0 }}<td>Client</td>{{ endif }}
+            <td>Password</td>
+            <td>Password Confirm</td>
+            <td>Api keys</td>
+            <td>Types</td>
+            <td>Admin</td>
+            <td>Active</td>
+            <td>Delete</td>
+          </tr>
+        </thead>
+        <tbody>
+      {{ for account in [users] }}
+          <tr>
+            <td><input type="email" value="[account:email]" name="useremail[[account:ID]]" required minlength="4" maxlength="255"></td>
+            {{ if [user:client:ID] == 0 }}<td><select name="userclient[[account:ID]]" required>
+            {{ for client in [clients] }}
+              <option value="[client:ID]" {{ if [account:client:ID] == [client:ID]}}selected{{ endif }}>[client:name] {{if [client:ID]==0}}(Admin rights){{ endif }}</option>
+            {{ endfor }}
+            </select></td>
+            {{ endif }}
+            <td><input name="userpassword[[account:ID]]" type="password" minlength="8"></td>
+            <td><input name="userpassword_confirm[[account:ID]]" type="password" minlength="8"></td>
+            <td><input type="checkbox" name="userapiaccess[[account:ID]]" value="[account:ID]" {{ if [account:apiaccess] == 'true'}} checked{{ endif }}></td>
+            <td><input type="checkbox" name="usertypeaccess[[account:ID]]" value="[account:ID]" {{ if [account:typeaccess] == 'true'}} checked{{ endif }}></td>
+            <td><input type="checkbox" name="userclientadmin[[account:ID]]" value="[account:ID]" {{ if [account:clientadmin] == 'true'}} checked{{ endif }}></td>
+            {{ if [account:ID] != 1 and [account:ID] != [user:ID] }}
+            <td><input type="checkbox" name="useractive[[account:ID]]" value="[account:ID]" {{ if [account:active] == 'true'}} checked{{ endif }}></td>
+            <td><input type="checkbox" name="userdelete[[account:ID]]" value="[account:ID]"></td>
+            {{ else }}<td colspan="2">Admin or You.</td>{{ endif }}
+          </tr>
+      {{ endfor }}
+        </tbody>
+      </table>
+      <p>
+        Both passwords need to be the same when making changes, leave empty for no change.<br>
+        Make sure to have at least 8 characters in your password.
+      </p>
+
+      <div><input type="submit" value="Update"></div>
+    </form>
+  {{ else }}
+    <p class="warning">No users registered just yet, create one using the form below.</p>
+  {{ endif }}
+  <h4>Create new user:</h4>
+  <form action="/admin#login" method="post">
+    <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+    <div><label for="useremail_new">Email address</label><input type="email" id="useremail_new" name="useremail[new]" required minlength="4" maxlength="255"></div>
+    {{ if [user:client:ID] == 0 }}
+    <div><label for="userclient_new">Client</label><select id="userclient_new" name="userclient[new]" required>
+      {{ for client in [clients] }}
+        <option value="[client:ID]">[client:name] {{if [client:ID]==0}}(Admin rights){{ endif }}</option>
+      {{ endfor }}
+      </select></div>
+    {{ endif }}
+    <div><label for="userpassword_new">Password</label><input name="userpassword[new]" id="userpassword_new" type="password" required minlength="8" autocomplete="new-password"></div>
+
+    <div><label for="apiaccess_new">Can edit Api keys</label><input type="checkbox" id="apiaccess_new" name="userapiaccess[new]" value="true" checked></div>
+    <div><label for="typeaccess_new">Can edit Types</label><input type="checkbox" id="typeaccess_new" name="usertypeaccess[new]" value="true" checked></div>
+    <div><label for="clientadmin_new">Can edit Users</label><input type="checkbox" id="clientadmin_new" name="userclientadmin[new]" value="true" checked></div>
+    <div><label for="useractive_new">Active</label><input type="checkbox" id="useractive_new" name="useractive[new]" value="true" checked></div>
+    <div><input type="submit" value="Create user login"></div>
+  </form>
+</section>
+{{ endif }}
+[footer]

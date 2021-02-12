@@ -1,0 +1,41 @@
+[header]
+<main>
+  <div>
+    <section class="login">
+    <header>
+        <h1>CMSaas administration.</h1>
+    </header>
+        <div>
+          <h2>Login</h2>
+          <p>Please log in to access your CMS administation tools.</p>
+          {{ ifpresent [loginerror] }}<p class="error">[loginerror]</p>{{ endif }}
+          <form method="post" action="/login">
+            <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+            {{ if [url] }}<input type="hidden" id="url" name="url" value="[url]">{{ endif }}
+
+            <div><label for="login_email">Email address</label> <input type="email" name="email" id="login_email" placeholder="example@email.com" required autofocus maxlength="255"></div>
+            <div><label for="login_password">Password</label> <input type="password" name="password" id="login_password" required></div>
+
+            <input type="submit" value="Log in" class="primary">
+          </form>
+
+          <label for="lostpassword">Lost your password? <i class="fa fa-caret-right"></i></label>
+        </div>
+    </section>
+    <section>
+      <input type="checkbox" id="lostpassword" class="hidden">
+      <div>
+        <h2>Password reset</h2>
+        <p>Let us send you an email so you can choose a new password.</p>
+
+          <form method="post" action="/resetpassword">
+            <input type="hidden" name="xsrf" value="[xsrf]">
+            <div><label for="reset_email">Email</label> <input type="email" name="email" id="reset_email" required maxlength="255"></div>
+            <input type="submit" value="Reset password">
+          </form>
+
+        </div>
+    </section>
+  </div>
+</main>
+[footer]

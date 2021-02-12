@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CMS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://css.underdark.nl/stable/base.css" rel="stylesheet">
+    <link href="https://css.underdark.nl/stable/layout.css" rel="stylesheet">
+    <link href="https://css.underdark.nl/stable/module.css" rel="stylesheet">
+    <link href="https://css.underdark.nl/stable/theme.css" rel="stylesheet">
+    <link href="/styles/admin.css" rel="stylesheet">
+  </head>
+  <body>
+      <header>
+        <div>
+          <div class="logo">
+            <a href="/" title="Content Management System as a Service">
+              {{ if [user] }}[user:client:name] CMS{{else}}CMSaaS{{ endif}}
+            </a>
+            <p>Manage your content, easily online. </p>
+          </div>
+          <nav>
+            {{ if [user] }}<ul>
+              {{ if [user:client:ID] == 0 or [user:clientadmin] }}<li><a href="/admin">Admin</a></li>{{ endif }}
+              <li><a href="/">Collections</a></li>
+              <li><a href="/articles">Articles</a></li>
+              <li><a href="/menus">Menus</a></li>
+              <li><a href="/variables">Variables</a></li>
+              {{ if [user:typeaccess] == 'true' }}<li><a href="/types">Types</a></li>{{ endif }}
+              <li><a href="/usersettings">Account</a></li>
+              {{ if [user:apiaccess] == 'true' }}<li><a href="/apikeys">Api access</a></li>{{ endif }}
+              <li>
+                <form method="post" action="/logout" onsubmit="return confirm('Are you sure you want to logout.')">
+                  <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+                  <input type="hidden" id="logout" name="action" value="[logout]">
+                  <input type="submit" value="Log out">
+                </form>
+              </li>
+            </ul>
+            {{ else }}
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/login">Login</a></li>
+            </ul>
+            {{ endif }}
+          </nav>
+        </div>
+      </header>
+      <main>

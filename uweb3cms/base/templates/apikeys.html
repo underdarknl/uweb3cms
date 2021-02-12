@@ -1,0 +1,56 @@
+[header]
+<section id="apiaccess">
+  <h2>API access:</h2>
+  <p>These settings have effect on access to the data for client account: [user:client:name].</p>
+  <p>Create, revoke and change API access.</p>
+  <p>Your websites will use the CMS client to connect to the CMS and read collections, menus and articles. To do so, they need access, which is granted by an API key.</p>
+
+  {{ ifpresent [apierror] }}
+    <p class="error">[apierror]</p>
+  {{ endif }}
+  {{ ifpresent [apisucces] }}
+    <p class="info">[apisucces]</p>
+  {{ endif }}
+
+  {{ if [keys] }}
+    <form action="/apikeys#apiaccess" method="post">
+      <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+      <table>
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Key</td>
+            <td>Filter</td>
+            <td>Active</td>
+            <td>Revoke</td>
+          </tr>
+        </thead>
+        <tbody>
+          {{ for key in [keys] }}
+          <tr>
+            <td><input type="text" value="[key:name]" name="name[[key:ID]]" minlength="4" maxlength="45"></td>
+            <td>[key:key]</td>
+            <td><input type="text" value="{{ if [key:collectionfilter] }}[key:collectionfilter]{{ endif}}" name="collectionfilter[[key:ID]]" maxlength="255"></td>
+            <td><input type="checkbox" name="active[[key:ID]]" value="true" {{ if [key:active] == "true"}} checked {{endif}} ></td>
+            <td><input type="checkbox" name="delete[[key:ID]]" value="Revoke"></td>
+          </tr>
+          {{ endfor }}
+        </tbody>
+      </table>
+      <div><input type="submit" value="Save changes"></div>
+    </form>
+  {{ else }}
+    <p class="info">You have no API keys yet, create one using the following form.</p>
+  {{ endif }}
+
+  <h4>Add a new API key:</h4>
+  <form action="/apikeys" method="post">
+      <input type="hidden" id="xsrf" name="xsrf" value="[xsrf]">
+      <div><label for="new_apikey_name">New API key name</label><input name="new_name" id="new_apikey_name" type="text" required placeholder="my first server" minlength="4" maxlength="45"></div>
+      <p>This is for your reference only, but it needs to be unique.</p>
+      <div><label for="new_apikey_filter">Access filter</label><input name="new_filter"  id="new_apikey_filter" type="text" maxlength="255"></div>
+      <p>Optionally, access can be restricted to a list of collections using `regex` style syntax.</p>
+      <div><input type="submit" value="Create new key"></div>
+  </form>
+</section>
+[footer]

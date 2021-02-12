@@ -1,0 +1,58 @@
+[header]
+
+<section>
+  <h2>Your Collections:</h2>
+  {{ if [collections] or [query] }}
+    <form action="/" method="post" class="lineform">
+      <input type="hidden" name="xsrf" value="[xsrf]">
+      <div><input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif}}" placeholder="Filter your collections"><input id="query" type="submit" value="Filter"><a class="button" href="/">Clear</a></div>
+    </form>
+    {{ if [collections] }}
+    <table class="collections">
+      <thead>
+        <tr><th>Name</th><th>Created</th><th>Delete</th></tr>
+      </thead>
+      <tbody>
+      {{ for collection in [collections] }}
+        <tr>
+          <td><a href="/collection/[collection:name]">[collection:name]</a></td>
+          <td title="[collection:dateCreated]">[collection:dateCreated|DateOnly]</td>
+          <td>
+            <form action="/collection/[collection:name]/remove" method="post">
+              <input type="hidden" name="xsrf" value="[xsrf]">
+              <input type="submit" value="Remove" onclick="return confirm('Are you sure you want to delete this collection? All coupled articles will not be deleted.');">
+            </form>
+          </td>
+        </tr>
+      {{ endfor }}
+      </tbody>
+    </table>
+    {{ elif [query] }}
+    <p>No collections found for &quot;[query]&quot;.</p>
+    {{ endif }}
+  {{ else }}
+    <p class="info">You have no collections just yet. Create one using the form below.</p>
+  {{ endif }}
+</section>
+
+<section>
+  <h3>Create a fresh collection:</h3>
+  <p>Collections usually group all articles for a site or domain, so one collection per website. Collections can share articles from other collections for easy and fast editing of all shared articles.</p>
+  <form action="/collection" method="post">
+    <input type="hidden" name="xsrf" value="[xsrf]">
+    <div><label for="collection_name">Name</label><input type="text" name="name" id="collection_name" maxlength="80" required></div>
+    {{if [collections] }}
+    <div><label for="collection_base">Based on:</label>
+        <select name="base" id="collection_base" >
+          <option value=""></option>
+          {{ for collection in [collections] }}
+          <option value="[collection:name]">[collection:name]</option>
+          {{ endfor }}
+        </select>
+      </div>
+      <p>Basing a new collection on an existing one will place all of the articles in your new collection, just like they are present in the original.</p>
+    {{ endif }}
+    <div><input type="submit" value="Create a new collection." class="primary"></div>
+  </form>
+</section>
+[footer]

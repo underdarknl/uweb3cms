@@ -1,0 +1,29 @@
+[header]
+<script src="/js/forms.js"></script>
+<section>
+  <h1>Edit Type</h1>
+  <form action="/type/[type:name]" method="post" class="type">
+    <input type="hidden" name="xsrf" value="[xsrf]">
+    {{ if not [type:client] and [user:client:ID] != 0 }}<p class="info">Saving changes to a base Type will create a new copy on your account which you can modify at will.</p>{{ endif }}
+    <div><label for="name">Name</label><input type="text" id="name" name="name" value="{{ if not [type:client] and [user:client:ID] != 0 }}my_{{ endif }}[type:name]" maxlength="45" required></div>
+    <p>The name for each type in your CMS must be unique.</p>
+
+    <div><label for="schema">Schema</label><textarea type="text" id="schema" name="schema" rows="[type:schema|TextareaRowCount]" required >[type:schema|prettyjson]</textarea></div>
+    <p>The schema must be Json compliant, and adhere to json.schema 7 standards.</p>
+
+    <div><label for="template">Template</label><textarea type="text" id="template" name="template" rows="[type:template|TextareaRowCount]" required>[type:template]</textarea></div>
+    <p>Use [block] brackets to place the fields defined in the schema in your template output.</p>
+    <div><input type="submit" value="Save changes" class="primary"></div>
+  </form>
+</section>
+{{ if [type:client] }}
+<section>
+  <h1>Delete Type</h1>
+  <form action="/type/[type:name]/remove" method="post">
+    <input type="hidden" name="xsrf" value="[xsrf]">
+    <input type="submit" value="Remove" onclick="return confirm('Are you sure you want to delete this type? Atoms can still use this type, but they will not maintain this type when edited or saved.');">
+  </form>
+</section>
+{{ endif }}
+
+[footer]

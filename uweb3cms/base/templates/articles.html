@@ -1,0 +1,61 @@
+[header]
+
+{{ if [articles] or [query] }}
+<section>
+  <h2>Your articles:</h2>
+  <form action="/articles" method="get" class="lineform">
+    <div><input id="query" type="text" name="query" value="{{ if [query] }}[query]{{ endif }}" placeholder="Filter your articles."><input id="query" type="submit" value="Filter" ><a class="button" href="/articles">Clear</a></div>
+  </form>
+  {{ if [toparticles] }}<div class="magazine">
+      <div>
+  {{endif}}
+        {{ if [query] }}
+          <h2>Articles matching: &quot;[query]&quot;</h2>
+        {{ else }}
+          {{ if [toparticles] }}<h2>20 Newest articles:</h2>{{ endif }}
+        {{ endif }}
+        {{ if [articles] }}
+            <ul>
+            {{ for article in [articles] }}
+              <li><a href="/article/[article:name|url]">[article:name]</a></li>
+            {{ endfor }}
+            </ul>
+        {{ else }}
+          <p class="info">No articles {{ if [query] }}found{{ else }}present{{ endif }}.</p>
+        {{ endif }}
+
+      {{ if [toparticles] }}
+      </div>
+      <div class="split50">
+        <h2>Most often coupled articles</h2>
+          <ol>
+          {{ for article in [toparticles] }}
+            <li><a href="/article/[article:name|url]">[article:name]</a></li>
+          {{ endfor }}
+          </ol>
+      </div>
+  </div>
+  {{ endif }}
+
+
+</section>
+{{ else }}
+  <section>
+    <h2>Your articles:</h2>
+    <p class="info">You have no articles yet.</p>
+  </section>
+{{ endif }}
+<section>
+  <h3>Create a new article:</h3>
+  <form action="/article" method="post">
+    <input type="hidden" name="xsrf" value="[xsrf]" >
+    <div><label for="article_name">Name</label><input type="text" name="name" id="article_name"  maxlength="80" required><input type="submit" value="Create" ></div>
+    <p>
+          Articles can be shared between collections. So make sure to give them a logical name depending on your sharing needs.<br>
+          Eg, &quot;Contact&quot; would be great for a shared contact page. <br>
+          But &quot;Home&quot; wouldn't be very useful if you are using that only on one website. &quot;Mywebsite/Home&quot; would then make more sense.</p>
+    </ul>
+  </form>
+</section>
+
+[footer]

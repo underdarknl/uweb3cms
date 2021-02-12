@@ -1,0 +1,39 @@
+[header]
+<section>
+  <h2>Global variables:</h2>
+  <p>
+    Global variables can be used to replace certain 'tags' in your content by an easily editable value.<br>
+    You could for example add a variable &quot;phonenumber&quot;, and put your phone number in the value field.<br>
+    If you then use &quot;[phonenumber]&quot; anywhere in your articles, your actual phone number will show up.<br>
+    Changing the number on all articles then becomes as easy as changing the value for the variable on this page.
+  </p>
+  <form action="/variables" method="post">
+    <input type="hidden" name="xsrf" value="[xsrf]">
+    <table>
+      <thead>
+        <tr>
+          <td>Tag</td>
+          <td>Value</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{ for variable in [variables] }}
+          <tr>
+              <td><input type="text" name="tags[[variable:ID]]" value="[variable:tag]" minlength="1" maxlength="100"></td>
+              <td><input type="text" name="values[[variable:ID]]" value="[variable:value]" minlength="1" maxlength="255"></td>
+          </tr>
+        {{ endfor }}
+        <tr>
+            <td><input type="text" name="new_tag" minlength="1" maxlength="100" placeholder="phonenumber"></td>
+            <td><input type="text" name="new_value" minlength="1" maxlength="255" placeholder="+31 123456789"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"><input type="submit" value="Save changes" class="primary"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </form>
+</section>
+[footer]

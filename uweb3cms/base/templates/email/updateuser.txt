@@ -1,0 +1,11 @@
+Dear [email],
+
+This email was sent to you because someone changed the password for your account to: [newpassword].
+If this wasn't you, you should immediately change your password to ensure account security.
+
+https://[host]
+
+Your email is: [email]
+Your password is: [newpassword]
+
+With regards

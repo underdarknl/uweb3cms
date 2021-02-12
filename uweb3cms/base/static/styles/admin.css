@@ -1,0 +1,97 @@
+main > section, main :not(aside):not(nav) > section {
+    padding: 1rem 5%;
+    word-wrap: break-word;
+}
+main > section:last-child,
+main :not(aside):not(nav) > section:last-child{
+  margin-bottom: 2em;
+}
+
+tbody > tr:nth-child(even){
+  background-color:#eaeaea;
+}
+form td{
+  vertical-align:top;
+}
+
+table.collections th:nth-child(2){
+  width:20%;
+}
+table.articles th:last-child,
+table.types th:last-child,
+table.types th:last-child,
+table.collections th:last-child{
+  width:10%;
+}
+
+table.article td:nth-child(3){
+  width:70%;
+}
+table tr:last-child button.down,
+table tr:first-child button.up{
+  display:none;
+}
+.markdown>ul{
+  list-style-type:none;
+  padding:0;
+}
+main > section:last-child{
+  margin-bottom: 2em;
+}
+form div + table{
+  margin-top:1em;
+}
+form td input + input{
+  width:auto !important;
+  margin-left:.2em;
+}
+form.lineform input[type=submit] + a.button{
+  min-width:unset;
+  margin-left:1em;
+}
+form.type textarea[rows]{
+  height: unset;
+}
+textarea.error{
+  background-color: hsl(0, 43%, 91%);
+}
+textarea.succes{
+  background-color: hsl(103, 44%, 89%);
+}
+form div.markdown textarea,
+form div.markdown input{
+  border-color:#99f;
+  background-color:#eef;
+}
+form div.markdown label:after,
+form div.markdown label:after{
+  content: "(Markdown enabled)";
+  padding:.4375rem 0 0 .5em;
+  font-size:0.7em;
+}
+form textarea.metadata{
+  width:100%;
+}
+#lostpassword + div{
+  display:none;
+}
+#lostpassword:checked + div{
+  display:block;
+}
+
+.modal.metadatafields h2{
+  min-width:70rem;
+}
+
+body > header nav > ul:not(.external) > li input[type=submit] {
+  color: #FFF;
+  font-size: 15px;
+  border-radius: .125rem;
+  background-color: #444;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(40%, rgba(0,0,0, 0.05)), to(rgba(0,0,0, 0.10)));
+  background-image: -webkit-linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+  background-image: -moz-linear-gradient(top, rgba(0,0,0, 0.05) 0%, rgba(0,0,0, 0.10));
+  background-image: -o-linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+  background-image: linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+}
