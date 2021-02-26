@@ -303,15 +303,30 @@ function renderfield(required, original, path, name, field) {
       fieldformat = formattypes[format];
     }
   }
-  if (!fieldformat) {
-    fieldformat = ['input',
-                   (field['type']?field['type']:'text'),
-                   null];
-  }
-  let input = document.createElement(fieldformat[0]);
-  input.type = fieldformat[1];
-  if (!input.pattern && fieldformat[2]) {
-    input.pattern = fieldformat[2];
+  let input = null;
+  if (field['enum']) {
+    input = document.createElement('select');
+    field['enum'].forEach(fieldvalue => {
+      let value = document.createElement('option');
+      value.value = fieldvalue;
+      if (original && original == fieldvalue) {
+        value.selected = true;
+      }
+      let valuetext = document.createTextNode(fieldvalue);
+      value.appendChild(valuetext);
+      input.appendChild(value);
+    });
+  } else {
+    if (!fieldformat) {
+      fieldformat = ['input',
+                     (field['type']?field['type']:'text'),
+                     null];
+    }
+    input = document.createElement(fieldformat[0]);
+    input.type = fieldformat[1];
+    if (!input.pattern && fieldformat[2]) {
+      input.pattern = fieldformat[2];
+    }
   }
   input.name = path;
   input.id = input.name;

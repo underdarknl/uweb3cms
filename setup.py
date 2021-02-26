@@ -5,18 +5,18 @@ import re
 from setuptools import setup, find_packages
 
 REQUIREMENTS = [
-  'uwebthree',
-  'marko',
-  'passlib'
+    'uwebthree',
+    'marko',
+    'passlib'
 ]
 
-def description():
+def Description():
   """Returns the contents of the README.md file as description information."""
   with open(os.path.join(os.path.dirname(__file__), 'README.md')) as r_file:
     return r_file.read()
 
 
-def version():
+def Version():
   """Returns the version of the library as read from the __init__.py file"""
   main_lib = os.path.join(os.path.dirname(__file__), 'uweb3cms', 'base', '__init__.py')
   with open(main_lib) as v_file:
@@ -25,9 +25,9 @@ def version():
 
 setup(
     name='uWeb3 cms',
-    version=version(),
+    version=Version(),
     description='uWeb, python3, uswgi compatible headless cms',
-    long_description=description(),
+    long_description=Description(),
     long_description_content_type='text/markdown',
     license='ISC',
     classifiers=[

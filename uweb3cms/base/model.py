@@ -930,7 +930,7 @@ class Client(SanitizedRecord):
 class Type(SanitizedRecord):
   """Global atom types"""
 
-  def _Clean():
+  def _Clean(self):
     if not self['name']:
       raise InvalidNameError('Provide a valid name')
     self['name'] = re.search('([\w\-_\.,]+)',
