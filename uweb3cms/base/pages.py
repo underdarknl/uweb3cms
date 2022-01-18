@@ -316,14 +316,14 @@ class PageMaker(uweb3.DebuggingPageMaker, uweb3.LoginMixin):
         except model.InvalidNameError:
           return {'clients': clients,
                   'clienterror': 'Provide a valid name for the new client.',
-                  'users': users}
+                  'users': currentusers}
         except self.connection.IntegrityError:
           return {'clients': clients,
                   'clienterror': 'That name was already used for another client.',
-                  'users': users}
+                  'users': currentusers}
         return {'clients': clients,
                 'clientsucces': 'Your new client was added',
-                'users': users}
+                'users': currentusers}
 
     users = []
     for user in currentusers:
@@ -396,9 +396,9 @@ class PageMaker(uweb3.DebuggingPageMaker, uweb3.LoginMixin):
            'active': values['useractive'].get('new', 'true'),
            'password': '',
            'client': int(values['userclient'].get('new', '')) if self.client['ID'] == 0 else self.client['ID'],
-           'typeaccess': self.post.getfirst('userapiaccess').get('new', 'true'),
-           'apiaccess': self.post.getfirst('usertypeaccess').get('new', 'true'),
-           'clientadmin': self.post.getfirst('userclientadmin').get('new', 'true')})
+           'typeaccess': self.post.getfirst('userapiaccess', {}).get('new', 'false'),
+           'apiaccess': self.post.getfirst('usertypeaccess', {}).get('new', 'false'),
+           'clientadmin': self.post.getfirst('userclientadmin', {}).get('new', 'false')})
         try:
           newpassword = values['userpassword'].get('new', '').strip()
           newuser.UpdatePassword(newpassword)
@@ -1122,7 +1122,7 @@ class PageMaker(uweb3.DebuggingPageMaker, uweb3.LoginMixin):
       keys = currentkeys
 
     # handle new api key creation
-    if self.post.getfirst('new_name', ''):
+    if self.post and self.post.getfirst('new_name', ''):
       try:
         newkey = model.Apiuser.Create(self.connection,
           {'name': self.post.getfirst('new_name'),
@@ -1188,7 +1188,10 @@ class PageMaker(uweb3.DebuggingPageMaker, uweb3.LoginMixin):
         del(article['collection'])
         del(article['article'])
         del(article['client'])
-        article['meta'] = json.loads(article['meta'])
+        try:
+          article['meta'] = json.loads(article['meta'])
+        except (json.decoder.JSONDecodeError, TypeError) as error:
+          article['meta'] = None
         articlesdict[int(article['ID'])] = article
     except model.Article.NotExistError:
       articles = []
